@@ -7,6 +7,10 @@ router.get("/show", userController.show);
 router.put("/update/:id", userController.update);
 router.delete("/delete/:id", userController.deleteclass);
 router.post("/authenticate", userController.authenticate);
+router.post("/add", userController.addUser);
+router.delete("/remove/:id", userController.deleted);
+
+
 
 
 ///// pour acceder à l interface twig

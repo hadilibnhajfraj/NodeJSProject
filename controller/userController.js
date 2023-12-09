@@ -13,6 +13,22 @@ async function add(data, callback) {
         callback({ success: false, error: err.message });
     }
 }
+
+async function addUser(req, res, next) {
+    try {
+        const user = new User(req.body);
+        await user.save();
+
+        // Créez un token JWT avec l'ID de l'utilisateur
+        const token = jwt.sign({ userId: user._id }, 'votre_secret_key_secrete', { expiresIn: '1h' });
+
+        // Retournez le token dans la réponse
+        res.status(200).json({ token: token, message: "user added successfully" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Internal Server Error");
+    }
+}
 async function show(req, res, next) {
     try {
         console.log('Fetching user data...');
@@ -98,8 +114,15 @@ async function authenticate(data, callback) {
         return callback({ success: false });
     }
 }
+async function deleted(req, res, next) {
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.status(200).send("User deleted")
+    } catch (err) {
+        console.log(err)
+    }
+};
 
 
 
-
-module.exports = { add, show, update, deleteclass, authenticate };
+module.exports = { add, show, update, deleteclass, authenticate, addUser, deleted };

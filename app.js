@@ -8,7 +8,7 @@ const path = require("path");
 const {
   authenticate,
   show,
-  add,deleteclass
+  add, deleteclass
 } = require("./controller/userController");
 mongo
   .connect(mongoconnect.url, {
@@ -34,7 +34,7 @@ io.on("connection", (socket) => {
   console.log("user connected");
   socket.emit("msg", "user is connected");
 
- 
+
 
   socket.on("connectUser", async (data) => {
     // Utilisez les données directement sans dépendre de req.body
@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
 
   socket.on('logout', () => {
     console.log('User logged out');
-    io.emit('userDisconnect', 'user disconnect');  
+    io.emit('userDisconnect', 'user disconnect');
   });
 
 

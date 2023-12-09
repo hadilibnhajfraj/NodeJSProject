@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        nav {
+            width: 200px;
+            background-color: #2c3e50;
+            padding: 10px;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+        }
+
+        nav a {
+            display: block;
+            color: #ecf0f1;
+            padding: 14px 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #3498db;
+        }
+
+        section {
+           /*width: calc(100% - 220px);*/
+            /* Calcule la largeur restante après avoir réservé 220px pour la navigation */
+            padding : 16px;
+            flex-grow: 1;
+            margin-left: 220px;
+            /* Ajout de cette marge pour aligner correctement le contenu */
+            overflow-x: auto;
+            /* Ajout du défilement horizontal si nécessaire */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        h2 {
+            color: #2c3e50;
+        }
+
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+<body>
+
+    <section>
+        <h2>Gestion des donnations</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Donneur</th>
+                    <th>Beneficiaire</th>
+                    <th>Type Organe</th>
+                    <th>Date</th>
+                    <th>Hopital</th>
+                    <th>Statut</th>
+                    <th>Notes</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="donnationID"></tbody>
+        </table>
+    </section>
+    <script>
+        const socket = io.connect();
+
+        socket.on('tous', function (data) {
+            console.log('Data received:', data);
+            const tbody = document.getElementById('donnationID');
+            tbody.innerHTML = '';  // Effacez le contenu actuel du tbody
+            if (data !== null && Array.isArray(data)) {
+                data.forEach(user => {
+                    const row = tbody.insertRow();
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    const cell3 = row.insertCell(2);
+                    const cell4 = row.insertCell(3);
+                    const cell5 = row.insertCell(4);
+                    const cell6 = row.insertCell(5);
+                    const cell7 = row.insertCell(6);
+                    const cell8 = row.insertCell(7);
+                    cell1.textContent = user.Donneur;
+                    cell2.textContent = user.Beneficiaire;
+                    cell3.textContent = user.Type_Organe;
+                    cell4.textContent = user.date;
+                    cell5.textContent = user.Hopital;
+                    cell6.textContent = user.Statut;
+                    cell7.textContent = user.Notes;
+                    const actionButton = document.createElement('button');
+                    actionButton.textContent = 'Ajouter Suivie'; // Texte du bouton
+                    actionButton.addEventListener('click', function () {
+                        window.location.href = "suivie?id=" + user._id;
+                        history.pushState({}, document.title, newURL);
+                        window.location.href = "suivie";
+                        alert('Bouton cliqué pour ' + user.Donneur);
+
+                    });
+                    cell8.appendChild(actionButton);
+                });
+            } else {
+                console.error('Invalid data format:', data);
+                // Ajoutez ici la logique pour afficher un message d'erreur à l'utilisateur
+            }
+        });
+
+
+
+        // Émettez l'événement 'aff' pour demander au serveur d'envoyer les données
+        socket.emit('tous');
+
+    </script>
+
+
+</body>
+
+</html>

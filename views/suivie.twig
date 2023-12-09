@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter une opération</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: auto;
+        }
+
+        h1 {
+            position: absolute;
+            top: 50%;
+            left: 15%;
+            transform: translate(-50%, -50%);
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+    </style>
+    <script src="/socket.io/socket.io.js">
+
+    </script>
+</head>
+
+<body>
+    <h1>Ajouter une opération</h1>
+
+    <form>
+        <input type="text" id="Operation" name="Operation" readonly hidden>
+
+        <label for="Patient">Patient :</label>
+        <input type="text" id="Patient" name="Patient">
+
+
+
+        <label for="Notes">Notes/Commentaires :</label>
+        <textarea id="Notes" name="Notes"></textarea>
+
+        <input onclick="envoyer(event)" type="submit" value="Ajouter">
+    </form>
+
+    <script>
+        const socket = io.connect();
+        const params = new URLSearchParams(window.location.search);
+        const operationid = params.get('id');
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mettez à jour la valeur du champ "Operation" avec la valeur de "operationid"
+            document.getElementById('Operation').value = operationid;
+            const newURL = window.location.pathname;
+            history.replaceState({}, document.title, newURL);
+        });
+
+
+        function envoyer(event) {
+            event.preventDefault();
+
+            const suivie = {
+                Operation: document.getElementById("Operation").value,
+                Patient: document.getElementById("Patient").value,
+                date: new Date(),
+                Notes: document.getElementById("Notes").value
+            };
+
+            if (!suivie.Operation || !suivie.Patient || !suivie.Notes) {
+                alert("Veuillez remplir tous les champs obligatoires.");
+                return;
+            }
+
+            console.log("suivie" + JSON.stringify(suivie));
+            socket.emit("suivieadd", suivie, (response) => {
+                if (response.error) {
+                    console.error('Error:', response.error);
+                    // Ajoutez ici la logique pour gérer l'erreur côté client
+                } else {
+                    // Logique de gestion du succès
+                    console.log('Suivie ajouté avec succès');
+                }
+            });
+            socket.emit("suivieaffiche", suivie.Operation);
+            alert("suivie ajouter avec succée.");
+            window.location.href = "affichesuivies?id=" + suivie.Operation;
+            history.pushState({}, document.title, newURL);
+            window.location.href = "affichesuivies";
+            alert('Bouton cliqué pour ' + suivie.Operation);
+        }
+    </script>
+</body>
+
+</html>

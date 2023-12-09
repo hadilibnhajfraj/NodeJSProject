@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter une opération</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            /* Ajusté la largeur du formulaire */
+            margin: auto;
+            /* Centré horizontalement */
+        }
+
+        h1 {
+            position: absolute;
+            /* Ajout d'une position absolue à l'élément h1 */
+            top: 50%;
+            /* Centrage vertical */
+            left: 15%;
+            /* Centrage horizontal */
+            transform: translate(-50%, -50%);
+            /* Centrage absolu */
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            /* Ajusté la taille du padding pour un aspect plus spacieux */
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            /* Ajusté la taille de la police */
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            /* Ajouter une hauteur spécifique pour le champ de texte */
+            height: 100px;
+            /* Ajustez la hauteur selon vos besoins */
+            resize: vertical;
+            /* Permet aux utilisateurs de redimensionner verticalement le champ de texte */
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <h1>Ajouter un événement</h1>
+
+    <form id="eventForm">
+        <label for="nom">Nom :</label>
+        <input type="text" id="nom" name="nom">
+
+        <label for="date">Date :</label>
+        <input type="date" id="date" name="date">
+
+        <label for="lieu">Lieu :</label>
+        <input type="text" id="lieu" name="lieu">
+
+        <label for="description">Description :</label>
+        <textarea id="description" name="description"></textarea>
+
+        <label for="organisateur">Organisateur :</label>
+        <input type="text" id="organisateur" name="organisateur">
+
+        <label for="type_even">Type d'événement :</label>
+        <select id="type_even" name="type_even">
+            <option value="Collecte de fonds">Collecte de fonds</option>
+            <option value="Conférence">Conférence</option>
+            <option value="Campagne">Campagne</option>
+            <option value="Cérémonie">Cérémonie</option>
+            <option value="Ateliers">Ateliers</option>
+            <option value="Course">Course</option>
+        </select>
+
+        <input onclick="envoye(event)" type="submit" value="Ajouter">
+    </form>
+    <script>
+        const socket = io.connect();
+        socket.on("operationadd", (data) => {
+            nom= document.getElementById("nom").value,
+        date = document.getElementById("date").value,
+        lieu = document.getElementById("lieu").value,
+        description =  document.getElementById("description").value,
+        organisateur =  document.getElementById("organisateur").value,
+        type_even = document.getElementById("type_even").value,
+            alert('la création de  ' + data.type_even + '  effectue le  ' + data.date + '  dans  ' + data.lieu);
+        })
+        function envoye(event) {
+            event.preventDefault();
+
+
+            // Utilisez document.getElementById pour récupérer les valeurs des champs
+            const evenement = {
+                nom: nom.value,
+                date: date.value,
+                lieu: lieu.value,
+                description: description.value,
+                organisateur: organisateur.value,
+                type_even: type_even.value
+            };
+            if (!evenement.nom || !evenement.date || !evenement.lieu || !evenement.description || !evenement.organisateur || !evenement.type_even) {
+                alert("Veuillez remplir tous les champs obligatoires.");
+                return;
+            }
+
+            console.log("evenement" + JSON.stringify(evenement));
+            socket.emit("operationadd", evenement);
+            window.location.href = "affiche";
+        }
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Formulaire de Donnation</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f4f4f4;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				height: 100vh;
+			}
+
+			form {
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+				width: 300px;
+			}
+
+			label {
+				display: block;
+				margin-bottom: 8px;
+			}
+
+			input,
+			select {
+				width: 100%;
+				padding: 8px;
+				margin-bottom: 16px;
+				box-sizing: border-box;
+			}
+
+			button {
+				background-color: #4caf50;
+				color: #fff;
+				padding: 10px 15px;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 16px;
+			}
+
+			button:hover {
+				background-color: #45a049;
+			}
+		</style>
+		<script src="/socket.io/socket.io.js"></script>
+	</head>
+	<body>
+
+		<form>
+
+			<label for="type">Type donnation :</label>
+			<select id="type" name="type" required>
+				<option value="don_monetaire">Don Monetaire</option>
+				<option value="don_organe">Don Organe</option>
+			</select>
+
+			<label for="montant">Montant :</label>
+			<input type="text" id="montant" name="montant">
+
+			<label for="nom">Nom :</label>
+			<input type="text" id="nom" name="nom">
+
+			<label for="date">Date :</label>
+			<input type="date" id="date" name="date" required>
+
+			<button onclick="envoye(event)" type="submit">Envoyer</button>
+       <button onclick="retour()" type="submit">Retour</button>
+
+
+		</form>
+<script>
+const socket = io.connect();
+
+function envoye(event) {
+	  event.preventDefault(); 
+    const type = document.getElementById("type").value;
+    const nom = document.getElementById("nom").value;
+    const montant = document.getElementById("montant").value;
+    const date = document.getElementById("date").value;
+
+    donnation = {
+        type: type,
+        nom: nom,
+        montant: montant,
+        date: date
+    }
+
+    socket.emit("donnation", donnation);
+}
+
+socket.on('nouveauDonnation', (data) => { 
+        alert(' type ' + data.type + ' nom ' + data.nom + ' a un montant :' + data.montant + ' le : ' + data.date);
+});
+function retour() {
+            window.location.href = "/donneur/tous";
+        }
+</script>
+	</body>
+</html>

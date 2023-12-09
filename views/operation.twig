@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter une opération</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            /* Ajusté la largeur du formulaire */
+            margin: auto;
+            /* Centré horizontalement */
+        }
+
+        h1 {
+            position: absolute;
+            /* Ajout d'une position absolue à l'élément h1 */
+            top: 50%;
+            /* Centrage vertical */
+            left: 15%;
+            /* Centrage horizontal */
+            transform: translate(-50%, -50%);
+            /* Centrage absolu */
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            /* Ajusté la taille du padding pour un aspect plus spacieux */
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            /* Ajusté la taille de la police */
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            /* Ajouter une hauteur spécifique pour le champ de texte */
+            height: 100px;
+            /* Ajustez la hauteur selon vos besoins */
+            resize: vertical;
+            /* Permet aux utilisateurs de redimensionner verticalement le champ de texte */
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <h1>Ajouter une opération</h1>
+
+    <form>
+        <label for="Donneur">Donneur :</label>
+        <input type="text" id="Donneur" name="donneur">
+        <label for="Beneficiaire">Bénéficiaire :</label>
+        <input type="text" id="Beneficiaire" name="beneficiaire">
+        <label for="Type_Organe">Type d'Organe :</label>
+        <select id="Type_Organe" name="Type_Organe">
+            <option value="Cœur">Cœur</option>
+            <option value="Poumons">Poumons</option>
+            <option value="Foie">Foie</option>
+            <option value="Reins">Reins</option>
+            <option value="Intestin">Intestin</option>
+        </select>
+
+        <label for="date">Date :</label>
+        <input type="date" id="date" name="date">
+
+        <label for="Hopital">Hôpital/Emplacement de l'Opération :</label>
+        <input type="text" id="Hopital" name="Hopital">
+
+        <label for="Statut">Statut de Réussite/Échec :</label>
+        <select id="Statut" name="Statut">
+            <option value="reussite">Réussite</option>
+            <option value="echec">Échec</option>
+        </select>
+
+        <label for="Notes">Notes/Commentaires :</label>
+        <textarea id="Notes" name="Notes"></textarea>
+
+        <input onclick="envoye(event)" type="submit" value="Ajouter">
+    </form>
+    <script>
+        const socket = io.connect();
+        socket.on("operationadd", (data) => {
+            Donneur = document.getElementById("Donneur");
+            console.log(Donneur);
+            Beneficiaire = document.getElementById("Beneficiaire");
+            console.log(Beneficiaire);
+            TypeOrgane = document.getElementById("Type_Organe");
+            console.log(Type_Organe);
+            date = document.getElementById("date");
+            console.log(date);
+            Hopital = document.getElementById("Hopital");
+            console.log(Hopital);
+            Statut = document.getElementById("Statut");
+            console.log(Statut);
+            Notes = document.getElementById("Notes");
+            console.log(Notes);
+            alert('L\'opration de ' + data.Donneur + ' et ' + data.Beneficiaire + ' effectue le ' + data.date + ' avec ' + data.Statut);
+        })
+        function envoye(event) {
+            event.preventDefault();
+            
+           
+            // Utilisez document.getElementById pour récupérer les valeurs des champs
+            const operation = {
+                Donneur: Donneur.value,
+                Beneficiaire: Beneficiaire.value,
+                Type_Organe: Type_Organe.value,
+                date: date.value,
+                Hopital: Hopital.value,
+                Statut: Statut.value,
+                Notes: Notes.value
+            };
+            if (!operation.Donneur || !operation.Beneficiaire || !operation.Type_Organe || !operation.date || !operation.Hopital || !operation.Statut || !operation.Notes) {
+                alert("Veuillez remplir tous les champs obligatoires.");
+                return;
+            }
+            currentDate = new Date();
+            selectedDate = new Date(operation.date);
+
+            if (selectedDate > currentDate) {
+                alert("La date ne peut pas être ultérieure à la date d'aujourd'hui.");
+                return;
+            }
+            
+
+            console.log("operation" + JSON.stringify(operation));
+            socket.emit("operationadd", operation);
+            window.location.href = "affiche";
+        }
+
+
+    </script>
+</body>
+
+</html>

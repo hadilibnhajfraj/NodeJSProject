@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <<<<<<< HEAD
+<<<<<<< HEAD
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,6 +50,8 @@
 </body>
 </html>
 =======
+=======
+>>>>>>> rafik
 
 <head>
     <meta charset="UTF-8">
@@ -128,6 +131,7 @@
 <body>
 
     <section>
+<<<<<<< HEAD
         <h2>Gestion des donnations</h2>
         <table>
             <thead>
@@ -143,6 +147,23 @@
                 </tr>
             </thead>
             <tbody id="donnationID"></tbody>
+=======
+        <h2>Gestion des evenements</h2>
+        <table>
+            
+            <tbody id="donnationID">
+                <thead>
+                    <tr>
+                        <th>nom</th>
+                        <th>date</th>
+                        <th>lieu</th>
+                        <th>description</th>
+                        <th>organisateur</th>
+                        <th>type evenement</th>
+                    </tr>
+                </thead>
+            </tbody>
+>>>>>>> rafik
         </table>
     </section>
     <script>
@@ -163,6 +184,7 @@
                     const cell6 = row.insertCell(5);
                     const cell7 = row.insertCell(6);
                     const cell8 = row.insertCell(7);
+<<<<<<< HEAD
                     cell1.textContent = user.Donneur;
                     cell2.textContent = user.Beneficiaire;
                     cell3.textContent = user.Type_Organe;
@@ -180,6 +202,14 @@
 
                     });
                     cell8.appendChild(actionButton);
+=======
+                    cell1.textContent = user.nom;
+                    cell2.textContent = user.date;
+                    cell3.textContent = user.lieu;
+                    cell4.textContent = user.description;
+                    cell5.textContent = user.organisateur;
+                    cell6.textContent = user.type_even;
+>>>>>>> rafik
                 });
             } else {
                 console.error('Invalid data format:', data);
@@ -197,5 +227,9 @@
 
 </body>
 
+<<<<<<< HEAD
 </html>
 >>>>>>> ala
+=======
+</html>
+>>>>>>> rafik

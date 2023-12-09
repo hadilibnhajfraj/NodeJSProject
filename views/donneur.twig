@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Formulaire de Donneur</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f4f4f4;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				height: 100vh;
+			}
+
+			form {
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+				width: 300px;
+			}
+
+			label {
+				display: block;
+				margin-bottom: 8px;
+			}
+
+			input {
+				width: 100%;
+				padding: 8px;
+				margin-bottom: 16px;
+				box-sizing: border-box;
+			}
+
+			button {
+				background-color: #4caf50;
+				color: #fff;
+				padding: 10px 15px;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 16px;
+			}
+
+			button:hover {
+				background-color: #45a049;
+			}
+		</style>
+		<script src="/socket.io/socket.io.js"></script>
+
+	</head>
+	<body>
+
+		<form>
+			<label for="nom">Nom :</label>
+			<input type="text" id="nom" name="nom" required>
+
+			<label for="prenom">Prénom :</label>
+			<input type="text" id="prenom" name="prenom" required>
+
+			<label for="cin">CIN :</label>
+			<input type="text" id="cin" name="cin" maxlength="8" required>
+			<label for="email">Adresse e-mail :</label>
+			<input type="email" id="email" name="email" required>
+			<label for="adresse">Adresse :</label>
+			<input type="text" id="adresse" name="adresse" required>
+
+			<button onclick="envoyerEtRediriger(event)" type="submit">Envoyer</button>
+	</form>
+		<script>
+			const socket = io.connect(); 
+
+
+
+function envoyerEtRediriger(event) {
+	  event.preventDefault(); 
+
+const nom = document.getElementById("nom").value;
+const prenom = document.getElementById("prenom").value;
+const cin = document.getElementById("cin").value;
+const adresse = document.getElementById("adresse").value;
+const email = document.getElementById("email").value;
+donneur = {
+nom: nom,
+prenom: prenom,
+cin: cin,
+adresse: adresse,
+email: email
+}
+ if (!nom || !prenom || !cin || !adresse || !email) {
+          alert("Veuillez remplir tous les champs.");
+          return;
+        }
+
+        // Vérifier la longueur du CIN
+        if (cin.length !== 8) {
+          alert("Le CIN doit avoir une longueur de 8 caractères.");
+          return;
+        }
+socket.emit("donneur", donneur)
+
+}
+socket.on('nouveauDonneur', (data) => {
+      console.log('Received nouveauDonneur event with data:', data);
+
+      const idString = data._id ? data._id : null;
+
+      if (idString) {
+        alert('ID donneur ' + idString + ' nom ' + data.nom + ' prenom :' + data.prenom + ' son cin  : ' + data.cin + ' dont son email est : ' +data.email);
+        localStorage.setItem('donneurId', idString);
+        window.location.href = '/donneur/unseuldonneur?donneurId=' + idString;
+      } else {
+        console.error('Donneur ID is undefined');
+
+      }
+    });
+		</script>
+	</body>
+</html>

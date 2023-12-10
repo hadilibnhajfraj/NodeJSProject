@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Affichage Article</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .article-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="articleDetails">
+    <div class="article-container" id="article-container">
+      <h1 id="titre"></h1>
+      <p>Auteur : <span id="auteur"></span></p>
+      <p>Contenu : <span id="contenu"></span></p>
+      <p>Date : <span id="date"></span></p>
+    </div>
+  </div>
+   <button onclick="commenter()" type="submit">Commenter</button>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const storedArticleId = localStorage.getItem('articleId');
+
+  if (storedArticleId) {
+    console.log('Stored Article ID:', storedArticleId);
+
+    fetch(`/article/unseularticle?articleId=${storedArticleId}`)
+      .then(response => {
+        console.log('Response Status:', response.status);
+
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP! Statut: ${response.status}`);
+        }
+
+        return response.text(); // Use response.text() for HTML content
+      })
+      .then(data => {
+        console.log('Data from the server:', data);
+
+        // Update the content of the existing HTML structure
+        document.getElementById("article-container").innerHTML = data;
+      })
+      .catch(error => console.error("Erreur lors de la récupération des détails de l'article", error));
+  } else {
+    console.error("ID de l'article non trouvé dans le localStorage");
+  }
+});
+ function commenter() {
+            window.location.href = "/comment/affiche/";
+        }
+  </script>
+</body>
+
+</html>

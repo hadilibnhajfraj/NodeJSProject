@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .button-container {
+            text-align: center;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        /* Ajoutez d'autres styles si nécessaire */
+    </style>
+</head>
+<body>
+
+    <div class="button-container">
+        <button class="button" onclick="creerBlog()">Créer un Blog</button>
+        <button class="button" onclick="consulterBlogs()">Consulter les blogs</button>
+    </div>
+
+    <script>
+        function creerBlog() {
+            // Rediriger vers la page article/article
+            window.location.href = "/article/article";
+        }
+
+        function consulterBlogs() {
+            // Ajoutez le code de redirection vers la page de consultation des blogs
+             window.location.href = "/comment/tousarticle";
+        }
+    </script>
+
+</body>
+</html>

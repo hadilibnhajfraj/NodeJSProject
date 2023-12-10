@@ -1,3 +1,7 @@
 {
+<<<<<<< HEAD
     "url":"mongodb://127.0.0.1:27017/donnation"
+=======
+    "url":"mongodb://127.0.0.1:27017/blogprojet"
+>>>>>>> amina
 }

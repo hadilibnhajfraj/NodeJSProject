@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+<body>
+
+  <form>
+    <label for="titre">titre :</label>
+    <input type="text" id="titre" name="titre" required>
+
+    <label for="auteur">Auteur :</label>
+    <input type="text" id="auteur" name="auteur" required>
+
+    <label for="source">Source :</label>
+    <input type="text" id="source" name="source" required>
+
+    <label for="contenu">Contenu :</label>
+    <input type="text" id="contenu" name="contenu" required>
+
+    <label for="date">Date</label>
+    <input type="date" id="date" name="date" required>
+
+    <button onclick="envoyerEtRediriger(event)" type="submit">Envoyer</button>
+  </form>
+
+  <script>
+    const socket = io.connect();
+
+    function envoyerEtRediriger(event) {
+      event.preventDefault();
+
+      const titre = document.getElementById("titre").value;
+      const auteur = document.getElementById("auteur").value;
+      const source = document.getElementById("source").value;
+      const contenu = document.getElementById("contenu").value;
+      const date = document.getElementById("date").value;
+
+      const article = {
+        titre: titre,
+        auteur: auteur,
+        source: source,
+        contenu: contenu,
+        date: date,
+      };
+
+      if (!article.titre || !article.auteur || !article.source || !article.contenu || !article.date) {
+        alert("Veuillez remplir tous les champs.");
+        return;
+      }
+
+      socket.emit("article", article);
+    }
+
+    socket.on('nouveauArticle', (data) => {
+      console.log('Received nouveauArticle event with data:', data);
+
+      const idString = data._id ? data._id : null;
+
+      if (idString) {
+        alert('ID auteur ' + idString + ' Auteur ' + data.auteur + ' ajoute un contenu :' + data.contenu + ' le : ' + data.date);
+        localStorage.setItem('articleId', idString);
+        window.location.href = '/article/unseularticle?articleId=' + idString;
+      } else {
+        console.error('Article ID is undefined');
+        // Handle the case where articleId is not available
+      }
+    });
+  </script>
+</body>
+
+</html>

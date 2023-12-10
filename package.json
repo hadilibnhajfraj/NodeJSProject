@@ -15,6 +15,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "jsonwebtoken": "^9.0.2",
 =======
 >>>>>>> hadil
@@ -23,6 +24,8 @@
 >>>>>>> ala
 =======
 >>>>>>> rafik
+=======
+>>>>>>> amina
     "mongoose": "^8.0.0",
     "nodemon": "^3.0.1",
     "socket.io": "^4.7.2",
